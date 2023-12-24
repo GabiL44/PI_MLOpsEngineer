@@ -1,5 +1,5 @@
 ''' En este archivo .py se definiran y desarrollaran funciones necesarias para realizar 
-los procesos de ETL y EDA del proyecto'''
+los procesos de ETL y EDA del proyecto'''  
 
 import pandas as pd
 from textblob import TextBlob
