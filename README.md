@@ -4,7 +4,6 @@
 ![Seaborn](https://img.shields.io/badge/-Seaborn-333333?style=flat&logo=seaborn)
 ![Scikitlearn](https://img.shields.io/badge/-Scikitlearn-333333?style=flat&logo=scikitlearn)
 ![FastAPI](https://img.shields.io/badge/-FastAPI-333333?style=flat&logo=fastapi)
-![Docker](https://img.shields.io/badge/-Docker-333333?style=flat&logo=docker)
 ![Render](https://img.shields.io/badge/-Render-333333?style=flat&logo=render)
 
 # Proyecto Individual: Machine Learning Operations (MLOps)
@@ -34,7 +33,9 @@ Dentro de la carpeta [notebooks] podrán encontrar un diccionario de datos en do
 
 ### Transformaciones
 
-Se realizó la extracción, transformación y carga (ETL) de los tres conjuntos de datos entregados. Dos de los conjuntos de datos se encontraban anidados, es decir había columnas con diccionarios o listas de diccionarios, por lo que aplicaron distintas estrategias para transformar las claves de esos diccionarios en columnas. Luego se rellenaron algunos nulos de variables necesarias para el proyecto, se borraron columnas con muchos nulos o que no aportaban al proyecto, para optimizar el rendimiento de la API y teneniendo en cuenta las limitaciones de almacenamiento del deploy. Para las transformaciones se utilizó la librería Pandas.
+Se realizó la extracción, transformación y carga (ETL) de los tres conjuntos de datos entregados. Dos de los conjuntos de datos se encontraban anidados, es decir había columnas con diccionarios o listas de diccionarios, por lo que aplicaron distintas estrategias para transformar las claves de esos diccionarios en columnas. Luego se rellenaron algunos nulos de variables necesarias para el proyecto, se borraron columnas con muchos nulos o que no aportaban al proyecto, para optimizar el rendimiento de la API y teniendo en cuenta las limitaciones de almacenamiento del deploy. Para las transformaciones se utilizó la librería Pandas.
+
+El proceso de ETL pueden visualizarlo en [ETL_steam_games](https://github.com/GabiL44/PI_MLOpsEngineer/blob/main/notebooks/ETL_steam_games.ipynb), [ETL_user_item](https://github.com/GabiL44/PI_MLOpsEngineer/blob/main/notebooks/ETL_user_item.ipynb), [ETL_users_review](https://github.com/GabiL44/PI_MLOpsEngineer/blob/main/notebooks/ETL_users_review.ipynb)
 
 
 ### Feature engineering
@@ -49,6 +50,7 @@ Dado que el objetivo de este proyecto es realizar una prueba de concepto, se rea
 
 Por otra parte, y bajo el mismo criterio de optimizar los tiempos de respuesta de las consultas en la API y teniendo en cuenta las limitaciones de almacenamiento en el servicio de nube para deployar la API, se realizaron dataframes auxiliares para cada una de las funciones solicitadas. En el mismo sentido, se guardaron estos dataframes en formato *parquet* que permite una compresión y codificación eficiente de los datos.
 
+El proceso realizado pueden verlo en [Feature engineering](https://github.com/GabiL44/PI_MLOpsEngineer/blob/main/notebooks/Feature_Engineering.ipynb)
 
 ### Análisis exploratorio de los datos
 
@@ -56,6 +58,7 @@ Se realizó el EDA a los tres conjuntos de datos sometidos a ETL con el objetivo
 
 En particular para el modelo de recomendación, se terminó eligiendo construir un dataframe específico con el id del usuario que realizaron reviews, los nombres de los juegos a los cuales se le realizaron comentarios y una columna de rating que se construyó a partir de la combinación del análisis de sentimiento y la recomendación a los juegos.
 
+El proceso de EDA puede visualizarse en [EDA](https://github.com/GabiL44/PI_MLOpsEngineer/blob/main/notebooks/EDA.ipynb)
 
 ### Modelo de aprendizaje automático
 
@@ -66,7 +69,7 @@ En el primer caso, el modelo tiene una relación ítem-ítem, esto es, se toma u
 Para generar estos modelos se adoptaron algoritmos basados en la memoria, los que abordan el problema del **filtrado colaborativo** utilizando toda la base de datos, tratando de encontrar usuarios similares al usuario activo (es decir, los usuarios para los que se les quiere recomendar) y utilizando sus preferencias para predecir las valoraciones del usuario activo.
 
 Para medir la similitud entre los juegos (item_similarity) y entre los usuarios (user_similarity) se utilizó la **similitud del coseno** que es una medida comúnmente utilizada para evaluar la similitud entre dos vectores en un espacio multidimensional. En el contexto de sistemas de recomendación y análisis de datos, la similitud del coseno se utiliza para determinar cuán similares son dos conjuntos de datos o elementos, y se calcula utilizando el coseno del ángulo entre los vectores que representan esos datos o elementos.
-
+El desarrollo de estos modelos pueden verlo en [Modelo_de_recomendacion](https://github.com/GabiL44/PI_MLOpsEngineer/blob/main/notebooks/Modelo_recomendacion.ipynb)
 
 ### Desarrollo de API
 
@@ -107,12 +110,8 @@ En caso de querer ejecutar la API desde localHost se deben seguir los siguientes
 
 Para el deploy de la API se seleccionó la plataforma Render que es una nube unificada para crear y ejecutar aplicaciones y sitios web, permitiendo el despliegue automático desde GitHub. Para esto se siguieron estos pasos:
 
-- Generación de un Dockerfile cuya imagen es Python 3.10. Esto se hace porque Render usa por defecto Python 3.7, lo que no es compatible con las versiones de las librerías trabajadas en este proyecto, por tal motivo, se optó por deployar el proyecto dentro de este contenedor.
-- Se generó un servicio nuevo  en `render.com`, conectado al presente repositorio y utilizando Docker como Runtime.
-- Finalmente, el servicio queda corriendo en .
+- Se generó un servicio nuevo  en `render.com`, conectado al presente repositorio y utilizando Python 3 como Runtime.
+- Finalmente, el servicio queda corriendo en [https://pi-mlops-engineer-d4uh.onrender.com](https://pi-mlops-engineer-d4uh.onrender.com).
 
-Como se indicó anteriormente, para el despliegue automático, Render utiliza GitHub y dado que el servicio gratuito cuenta con una limitada capacidad de almacenamiento, se realizó un repositorio exclusivo para el deploy, el cual se encuenta [aqui].
+Como se indicó anteriormente, para el despliegue automático, Render utiliza GitHub y dado que el servicio gratuito cuenta con una limitada capacidad de almacenamiento, se realizó un repositorio exclusivo para el deploy, el cual se encuenta [aqui](https://github.com/GabiL44/PI_MLOps_render_deploy).
 
-### Video
-
-En este [video] se explica brevemente este proyecto mostrando el funcionamiento de la API.
