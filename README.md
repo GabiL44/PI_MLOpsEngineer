@@ -10,8 +10,8 @@
 
 ## Introducción
 
-Desde Henry se nos plantea desarrolar un proyecto de rocomendación de videojuegos basado en datos de plataforma Steam. Nuestro trabajo es simular el rol de un MLOps Engineer. 
-Para este proyecto se nos facilitaron datos y se nos solicitó la creación de una API deployada en un servicio en la nube y la aplicación de dos modelos de Machine Learning, por un lado la recomendación de juegos a partir de a partir de un juego y/o a partir de los gustos de un usuario en particular, por otro lado un análisis de sentimiento a partir de las reviews de los usuarios.
+Desde Henry se nos planteó desarrolar un sistema de recomendación de videojuegos basado en datos de la plataforma Steam. Nuestro trabajo es simular el rol de un MLOps Engineer. 
+Para este proyecto se nos facilitaron datos y se nos solicitó la creación de una API deployada en un servicio en la nube y la aplicación de dos modelos de Machine Learning, por un lado la recomendación de juegos a partir de la simulitud que pudieran presentar con otros juegos y/o a partir de los gustos de un usuario en particular, por otro lado un análisis de sentimiento a partir de las reviews de los usuarios.
 
 ## Sobre Steam
 
@@ -33,7 +33,7 @@ Dentro de la carpeta [notebooks] podrán encontrar un diccionario de datos en do
 
 ### Transformaciones
 
-Se realizó la extracción, transformación y carga (ETL) de los tres conjuntos de datos entregados. Dos de los conjuntos de datos se encontraban anidados, es decir había columnas con diccionarios o listas de diccionarios, por lo que aplicaron distintas estrategias para transformar las claves de esos diccionarios en columnas. Luego se rellenaron algunos nulos de variables necesarias para el proyecto, se borraron columnas con muchos nulos o que no aportaban al proyecto, para optimizar el rendimiento de la API y teniendo en cuenta las limitaciones de almacenamiento del deploy. Para las transformaciones se utilizó la librería Pandas.
+Se realizó la extracción, transformación y carga (ETL) de los tres conjuntos de datos entregados. Para las transformaciones se utilizó la librería Pandas.
 
 El proceso de ETL pueden visualizarlo en [ETL_steam_games](https://github.com/GabiL44/PI_MLOpsEngineer/blob/main/notebooks/ETL_steam_games.ipynb), [ETL_user_item](https://github.com/GabiL44/PI_MLOpsEngineer/blob/main/notebooks/ETL_user_item.ipynb), [ETL_users_review](https://github.com/GabiL44/PI_MLOpsEngineer/blob/main/notebooks/ETL_users_review.ipynb)
 
@@ -46,7 +46,7 @@ Uno de los pedidos para este proyecto fue aplicar un análisis de sentimiento a 
 * 1 si es neutral o esta sin review
 * 2 si es positivo.
 
-Dado que el objetivo de este proyecto es realizar una prueba de concepto, se realiza un análisis de sentimiento básico utilizando TextBlob que es una biblioteca de procesamiento de lenguaje natural (NLP) en Python. El objetivo de esta metodología es asignar un valor numérico a un texto, en este caso a los comentarios que los usuarios dejaron para un juego determinado, para representar si el sentimiento expresado en el texto es negativo, neutral o positivo. 
+Se realizó un análisis de sentimiento básico utilizando TextBlob que es una biblioteca de procesamiento de lenguaje natural (NLP) en Python. El objetivo de esta metodología es asignar un valor numérico a un texto, en este caso a los comentarios que los usuarios dejaron para un juego determinado, para representar si el sentimiento expresado en el texto es negativo, neutral o positivo. 
 
 Por otra parte, y bajo el mismo criterio de optimizar los tiempos de respuesta de las consultas en la API y teniendo en cuenta las limitaciones de almacenamiento en el servicio de nube para deployar la API, se realizaron dataframes auxiliares para cada una de las funciones solicitadas. En el mismo sentido, se guardaron estos dataframes en formato *parquet* que permite una compresión y codificación eficiente de los datos.
 
@@ -54,9 +54,7 @@ El proceso realizado pueden verlo en [Feature engineering](https://github.com/Ga
 
 ### Análisis exploratorio de los datos
 
-Se realizó el EDA a los tres conjuntos de datos sometidos a ETL con el objetivo de identificar las variables que se pueden utilizar en la creación del modelo de recmendación. Para ello se utilizó la librería Pandas para la manipulación de los datos y las librerías Matplotlib y Seaborn para la visualización.
-
-En particular para el modelo de recomendación, se terminó eligiendo construir un dataframe específico con el id del usuario que realizaron reviews, los nombres de los juegos a los cuales se le realizaron comentarios y una columna de rating que se construyó a partir de la combinación del análisis de sentimiento y la recomendación a los juegos.
+Se realizó el EDA a los tres conjuntos de datos sometidos a ETL con el objetivo de identificar las variables que se pueden utilizar en la creación del modelo de recomendación. Para ello se utilizó la librería Pandas para la manipulación de los datos y las librerías Matplotlib y Seaborn para la visualización.
 
 El proceso de EDA puede visualizarse en [EDA](https://github.com/GabiL44/PI_MLOpsEngineer/blob/main/notebooks/EDA.ipynb)
 
@@ -66,9 +64,6 @@ Se crearon dos modelos de recomendación, que generan cada uno, una lista de 5 j
 
 En el primer caso, el modelo tiene una relación ítem-ítem, esto es, se toma un juego y en base a que tan similar es ese juego con el resto de los juegos se recomiendan similares. En el segundo caso, el modelo aplicar un filtro usuario-juego, es decir, toma un usuario, encuentra usuarios similares y se recomiendan ítems que a esos usuarios similares les gustaron.
 
-Para generar estos modelos se adoptaron algoritmos basados en la memoria, los que abordan el problema del **filtrado colaborativo** utilizando toda la base de datos, tratando de encontrar usuarios similares al usuario activo (es decir, los usuarios para los que se les quiere recomendar) y utilizando sus preferencias para predecir las valoraciones del usuario activo.
-
-Para medir la similitud entre los juegos (item_similarity) y entre los usuarios (user_similarity) se utilizó la **similitud del coseno** que es una medida comúnmente utilizada para evaluar la similitud entre dos vectores en un espacio multidimensional. En el contexto de sistemas de recomendación y análisis de datos, la similitud del coseno se utiliza para determinar cuán similares son dos conjuntos de datos o elementos, y se calcula utilizando el coseno del ángulo entre los vectores que representan esos datos o elementos.
 El desarrollo de estos modelos pueden verlo en [Modelo_de_recomendacion](https://github.com/GabiL44/PI_MLOpsEngineer/blob/main/notebooks/Modelo_recomendacion.ipynb)
 
 ### Desarrollo de API
@@ -111,7 +106,11 @@ En caso de querer ejecutar la API desde localHost se deben seguir los siguientes
 Para el deploy de la API se seleccionó la plataforma Render que es una nube unificada para crear y ejecutar aplicaciones y sitios web, permitiendo el despliegue automático desde GitHub. Para esto se siguieron estos pasos:
 
 - Se generó un servicio nuevo  en `render.com`, conectado al presente repositorio y utilizando Python 3 como Runtime.
-- Finalmente, el servicio queda corriendo en [https://pi-mlops-engineer-d4uh.onrender.com](https://pi-mlops-engineer-d4uh.onrender.com).
+- Finalmente, el servicio queda corriendo en [https://pi-mlops-engineer-d4uh.onrender.com](https://pi-mlops-engineer-jvwx.onrender.com).
 
 Como se indicó anteriormente, para el despliegue automático, Render utiliza GitHub y dado que el servicio gratuito cuenta con una limitada capacidad de almacenamiento, se realizó un repositorio exclusivo para el deploy, el cual se encuenta [aqui](https://github.com/GabiL44/PI_MLOps_render_deploy).
+
+
+### Video
+Para finalizar les dejo un [video](https://drive.google.com/file/d/1FWyGBzr3Cb9St8XRSLnHJidjx3EzYiza/view?usp=sharing), donde muestro el desarrollo del proyecto y su deploy en render y LocalHost.
 
